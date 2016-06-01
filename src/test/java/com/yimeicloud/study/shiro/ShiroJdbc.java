@@ -1,19 +1,19 @@
 package com.yimeicloud.study.shiro;
 
 import java.util.Arrays;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.config.IniSecurityManagerFactory;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.DefaultSecurityManager;
-import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.realm.jdbc.JdbcRealm;
+import org.apache.shiro.realm.jdbc.JdbcRealm.SaltStyle;
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.Factory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -49,7 +49,7 @@ public class ShiroJdbc {
 
 	@Test
 	public void runTest() {
-
+		
 		// 设置Realm
 		DruidDataSource ds = new DruidDataSource();
 		ds.setDriverClassName("com.mysql.jdbc.Driver");
@@ -60,15 +60,26 @@ public class ShiroJdbc {
 		JdbcRealm jdbcRealm = new JdbcRealm();
 		jdbcRealm.setDataSource(ds);
 		jdbcRealm.setPermissionsLookupEnabled(true);
-		jdbcRealm.setAuthenticationQuery("SELECT password FROM users WHERE user_name = ?");
+		jdbcRealm.setSaltStyle(SaltStyle.COLUMN);
+		jdbcRealm.setAuthenticationQuery("SELECT password, '123' FROM users WHERE user_name = ?");
 		jdbcRealm.setUserRolesQuery(
 				"SELECT role_name from roles where role_id = (select role_id from users where user_name = ?)");
 		jdbcRealm.setPermissionsQuery(
 				"SELECT permission_name FROM permissions WHERE permission_id IN (SELECT permission_id FROM roles_permissions WHERE role_id = (select role_id FROM roles WHERE role_name = ?))");
 
+		// **********************
+		//HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher("MD5");
+		HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
+		credentialsMatcher.setHashAlgorithmName("MD5");
+		credentialsMatcher.setHashIterations(2);
+		jdbcRealm.setCredentialsMatcher(credentialsMatcher);
+		// **********************
+		
 		DefaultSecurityManager securityManager = new DefaultSecurityManager();
 
 		securityManager.setRealms(Arrays.asList((Realm) jdbcRealm));
+		
+		
 		SecurityUtils.setSecurityManager(securityManager);
 
 		// 获取当前用户

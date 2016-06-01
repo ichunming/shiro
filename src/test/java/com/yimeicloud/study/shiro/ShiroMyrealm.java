@@ -18,8 +18,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ShiroJdbcIni {
-	private static final transient Logger log = LoggerFactory.getLogger(ShiroJdbcIni.class);
+public class ShiroMyrealm {
+	private static final transient Logger log = LoggerFactory.getLogger(ShiroMyrealm.class);
 
 	// 所有方法执行一次
 	@BeforeClass
@@ -44,7 +44,7 @@ public class ShiroJdbcIni {
 	@Test
 	public void runTest() {
 
-		Factory<SecurityManager> factory = new IniSecurityManagerFactory("classpath:shiro-jdbc.ini");
+		Factory<SecurityManager> factory = new IniSecurityManagerFactory("classpath:shiro-myrealm.ini");
 
 		SecurityManager securityManager = factory.getInstance();
 
@@ -55,9 +55,7 @@ public class ShiroJdbcIni {
 		Subject currentUser = SecurityUtils.getSubject();
 
 		// 创建用户登录凭证
-		//UsernamePasswordToken token = new UsernamePasswordToken("aTom", "aTom");
-		//UsernamePasswordToken token = new UsernamePasswordToken("uPitter", "uPitter");
-		UsernamePasswordToken token = new UsernamePasswordToken("gLily", "gLily");
+		UsernamePasswordToken token = new UsernamePasswordToken("myrealm", "myrealm");
 
 		// 登入
 		try {

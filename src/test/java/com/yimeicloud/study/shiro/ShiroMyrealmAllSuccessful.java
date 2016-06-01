@@ -18,8 +18,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ShiroJdbcIni {
-	private static final transient Logger log = LoggerFactory.getLogger(ShiroJdbcIni.class);
+public class ShiroMyrealmAllSuccessful {
+	private static final transient Logger log = LoggerFactory.getLogger(ShiroMyrealmAllSuccessful.class);
 
 	// 所有方法执行一次
 	@BeforeClass
@@ -44,7 +44,7 @@ public class ShiroJdbcIni {
 	@Test
 	public void runTest() {
 
-		Factory<SecurityManager> factory = new IniSecurityManagerFactory("classpath:shiro-jdbc.ini");
+		Factory<SecurityManager> factory = new IniSecurityManagerFactory("classpath:shiro-myrealm-all-success.ini");
 
 		SecurityManager securityManager = factory.getInstance();
 
@@ -55,9 +55,7 @@ public class ShiroJdbcIni {
 		Subject currentUser = SecurityUtils.getSubject();
 
 		// 创建用户登录凭证
-		//UsernamePasswordToken token = new UsernamePasswordToken("aTom", "aTom");
-		//UsernamePasswordToken token = new UsernamePasswordToken("uPitter", "uPitter");
-		UsernamePasswordToken token = new UsernamePasswordToken("gLily", "gLily");
+		UsernamePasswordToken token = new UsernamePasswordToken("myrealm", "myrealm");
 
 		// 登入
 		try {
@@ -71,29 +69,11 @@ public class ShiroJdbcIni {
 			log.info("帐户被锁");
 		} catch (AuthenticationException e) {
 			log.info("认证异常");
-		}
+		} 
 
 		// 认证 
 		if (currentUser.isAuthenticated()) {
 			log.info("认证通过...");
-
-			// 角色
-			if (currentUser.hasRole("admin")) {
-				log.info("管理员角色...");
-			} else if (currentUser.hasRole("user")) {
-				log.info("普通用户角色...");
-			} else if (currentUser.hasRole("guest")) {
-				log.info("访客角色...");
-			} else {
-				log.info("未知角色...");
-			}
-
-			// 权限
-			if (currentUser.isPermitted("delete")) {
-				log.info("有删除权限...");
-			} else {
-				log.info("无删除权限...");
-			}
 		} else {
 			log.info("认证未通过...");
 		}

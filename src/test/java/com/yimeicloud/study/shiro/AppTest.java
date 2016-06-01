@@ -1,5 +1,12 @@
 package com.yimeicloud.study.shiro;
 
+import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+import org.apache.shiro.crypto.hash.DefaultHashService;
+import org.apache.shiro.crypto.hash.HashRequest;
+import org.apache.shiro.crypto.hash.Md5Hash;
+import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.util.ByteSource;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -33,6 +40,43 @@ public class AppTest
      */
     public void testApp()
     {
-        assertTrue( true );
+        String str = "aTom";
+        String salt = "123";
+        String md5Hash = new Md5Hash(str, salt).toString();
+        System.out.println(md5Hash);
+        
+        DefaultHashService hashService = new DefaultHashService();
+        /*// 默认算法
+        hashService.setHashAlgorithmName("SHA-512");
+        // 私盐
+        hashService.setPrivateSalt(new SimpleByteSource("123"));
+        // 是否生成公盐
+        hashService.setGeneratePublicSalt(false);
+        // 用于生成公盐
+        hashService.setRandomNumberGenerator(new SecureRandomNumberGenerator());
+        // 生成hash值的迭代次数
+        hashService.setHashIterations(1);*/
+        
+        HashRequest request = new HashRequest.Builder()
+        		.setAlgorithmName("MD5")
+        		.setSource(ByteSource.Util.bytes("aTom"))
+        		.setSalt(ByteSource.Util.bytes("123"))
+        		.setIterations(2)
+        		.build();
+        
+        String hex = hashService.computeHash(request).toString();
+        System.out.println(hex);
+        
+        // *******
+        String algorithmName = "md5";  
+        String username = "liu";  
+        String password = "123";  
+        String salt1 = username;  
+        String salt2 = new SecureRandomNumberGenerator().nextBytes().toHex();  
+        int hashIterations = 2;  
+
+        SimpleHash hash = new SimpleHash(algorithmName, password, salt1 + salt2, hashIterations);  
+        String encodedPassword = hash.toHex();
+        System.out.println(encodedPassword);
     }
 }
