@@ -86,7 +86,7 @@ public class ShiroJdbc {
 		Subject currentUser = SecurityUtils.getSubject();
 
 		// 创建用户登录凭证
-		UsernamePasswordToken token = new UsernamePasswordToken("aTom", "aTom");
+		UsernamePasswordToken token = new UsernamePasswordToken("aTom", "Tom");
 		//UsernamePasswordToken token = new UsernamePasswordToken("uPitter", "uPitter");
 		//UsernamePasswordToken token = new UsernamePasswordToken("gLily", "gLily");
 

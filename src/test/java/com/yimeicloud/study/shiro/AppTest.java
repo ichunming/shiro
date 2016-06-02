@@ -56,27 +56,38 @@ public class AppTest
         hashService.setRandomNumberGenerator(new SecureRandomNumberGenerator());
         // 生成hash值的迭代次数
         hashService.setHashIterations(1);*/
+        String salt2 = new SecureRandomNumberGenerator().nextBytes().toHex();
         
         HashRequest request = new HashRequest.Builder()
         		.setAlgorithmName("MD5")
         		.setSource(ByteSource.Util.bytes("aTom"))
-        		.setSalt(ByteSource.Util.bytes("123"))
-        		.setIterations(2)
+        		.setSalt(ByteSource.Util.bytes("aTom"))
+        		.setIterations(1)
         		.build();
         
         String hex = hashService.computeHash(request).toString();
         System.out.println(hex);
+        System.out.println(salt2);
         
         // *******
         String algorithmName = "md5";  
-        String username = "liu";  
-        String password = "123";  
+        String username = "aTom";  
+        String password = "aTom";  
         String salt1 = username;  
-        String salt2 = new SecureRandomNumberGenerator().nextBytes().toHex();  
-        int hashIterations = 2;  
+        //String salt2 = new SecureRandomNumberGenerator().nextBytes().toHex();
+        
+        int hashIterations = 1;  
 
         SimpleHash hash = new SimpleHash(algorithmName, password, salt1 + salt2, hashIterations);  
         String encodedPassword = hash.toHex();
+        System.out.println("aTom");
         System.out.println(encodedPassword);
+        System.out.println(salt2);
+        
+        
+        SecureRandomNumberGenerator randomNumberGenerator =  
+        	     new SecureRandomNumberGenerator();  
+        	randomNumberGenerator.setSeed("123".getBytes());
+        System.out.println(randomNumberGenerator.nextBytes().toHex());
     }
 }

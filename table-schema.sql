@@ -5,39 +5,17 @@ DROP TABLE IF EXISTS `permissions`;
 DROP TABLE IF EXISTS `roles`;
 
 #------------------------
-# table roles
-#------------------------
-CREATE TABLE `roles` (  
-  `role_id` int(10) unsigned NOT NULL AUTO_INCREMENT,  
-  `role_name` varchar(64) COLLATE utf8_bin DEFAULT NULL,  
-  `created_time` datetime DEFAULT NULL,  
-  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,  
-  PRIMARY KEY(`role_id`)  
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-#------------------------
-# table permissions
-#------------------------
-CREATE TABLE `permissions` (  
-  `permission_id` int(10) unsigned NOT NULL AUTO_INCREMENT,  
-  `permission_name` varchar(64) COLLATE utf8_bin DEFAULT NULL,  
-  `created_time` datetime DEFAULT NULL,  
-  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,  
-  PRIMARY KEY(`permission_id`)  
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-#------------------------
 # table users
 #------------------------
 CREATE TABLE `users` (  
   `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,  
-  `user_name` varchar(64) COLLATE utf8_bin DEFAULT NULL,  
-  `password` varchar(128) COLLATE utf8_bin DEFAULT NULL,  
-  `role_id` int(10),
+  `user_name` varchar(32) COLLATE utf8_bin DEFAULT NULL,  
+  `password` varchar(32) COLLATE utf8_bin DEFAULT NULL,
+  `password_salt` varchar(32),
+  `roles` varchar(128),
   `created_time` datetime DEFAULT NULL,  
-  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,  
-  PRIMARY KEY(`user_id`),  
-  FOREIGN KEY(`user_id`) REFERENCES roles(`role_id`)
+  `update_time` timestamp DEFAULT CURRENT_TIMESTAMP,  
+  PRIMARY KEY(`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 #------------------------
@@ -45,47 +23,31 @@ CREATE TABLE `users` (
 #------------------------
 CREATE TABLE `roles_permissions` (  
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,  
-  `role_id` int(10) unsigned NOT NULL,  
-  `permission_id` int(10) unsigned NOT NULL,  
+  `role` varchar(20) NOT NULL,  
+  `permission` varchar(50) NOT NULL,  
   `created_time` datetime DEFAULT NULL,  
-  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,  
-  PRIMARY KEY(`id`),
-  FOREIGN KEY(`role_id`) REFERENCES roles(`role_id`),
-  FOREIGN KEY(`permission_id`) REFERENCES permissions(`permission_id`)
+  `update_time` timestamp DEFAULT CURRENT_TIMESTAMP,  
+  PRIMARY KEY(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-#------------------------
-# roles
-#------------------------
-INSERT INTO roles(`role_name`) VALUES('admin');
-INSERT INTO roles(`role_name`) VALUES('user');
-INSERT INTO roles(`role_name`) VALUES('guest');
-
-#------------------------
-# permissions
-#------------------------
-INSERT INTO permissions(`permission_name`) VALUES('create');
-INSERT INTO permissions(`permission_name`) VALUES('retrieve');
-INSERT INTO permissions(`permission_name`) VALUES('update');
-INSERT INTO permissions(`permission_name`) VALUES('delete');
 
 #------------------------
 # roles_permissions
 #------------------------
-INSERT INTO roles_permissions(`role_id`, `permission_id`) VALUES(1, 1);
-INSERT INTO roles_permissions(`role_id`, `permission_id`) VALUES(1, 2);
-INSERT INTO roles_permissions(`role_id`, `permission_id`) VALUES(1, 3);
-INSERT INTO roles_permissions(`role_id`, `permission_id`) VALUES(1, 4);
-INSERT INTO roles_permissions(`role_id`, `permission_id`) VALUES(2, 2);
-INSERT INTO roles_permissions(`role_id`, `permission_id`) VALUES(2, 3);
-INSERT INTO roles_permissions(`role_id`, `permission_id`) VALUES(3, 2);
+INSERT INTO roles_permissions(`role`, `permission`) VALUES('admin', 'admin:create');
+INSERT INTO roles_permissions(`role`, `permission`) VALUES('admin', 'admin:retrieve');
+INSERT INTO roles_permissions(`role`, `permission`) VALUES('admin', 'admin:update');
+INSERT INTO roles_permissions(`role`, `permission`) VALUES('admin', 'admin:delete');
+INSERT INTO roles_permissions(`role`, `permission`) VALUES('user', 'user:retrieve');
+INSERT INTO roles_permissions(`role`, `permission`) VALUES('user', 'user:update');
+INSERT INTO roles_permissions(`role`, `permission`) VALUES('user', 'user:delete');
+INSERT INTO roles_permissions(`role`, `permission`) VALUES('guest', 'guest:retrieve');
 
 #------------------------
 # users
 #------------------------
-INSERT INTO users(`user_name`, `password`, `role_id`) VALUES('aTom', 'aTom', 1);
-INSERT INTO users(`user_name`, `password`, `role_id`) VALUES('uPitter', 'uPitter', 2);
-INSERT INTO users(`user_name`, `password`, `role_id`) VALUES('gLily', 'gLily', 3);
+INSERT INTO users(`user_name`, `password`, `password_salt`, `roles`) VALUES('aTom', 'aTom', '123', 'admin,user,guest');
+INSERT INTO users(`user_name`, `password`, `password_salt`, `roles`) VALUES('uPitter', 'uPitter', '123', 'user');
+INSERT INTO users(`user_name`, `password`, `password_salt`, `roles`) VALUES('gLily', 'gLily', '123', 'guest');
 
 
 

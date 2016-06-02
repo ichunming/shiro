@@ -55,9 +55,9 @@ public class ShiroJdbcIni {
 		Subject currentUser = SecurityUtils.getSubject();
 
 		// 创建用户登录凭证
-		//UsernamePasswordToken token = new UsernamePasswordToken("aTom", "aTom");
+		UsernamePasswordToken token = new UsernamePasswordToken("aTom", "aTom");
 		//UsernamePasswordToken token = new UsernamePasswordToken("uPitter", "uPitter");
-		UsernamePasswordToken token = new UsernamePasswordToken("gLily", "gLily");
+		//UsernamePasswordToken token = new UsernamePasswordToken("gLily", "gLily");
 
 		// 登入
 		try {
@@ -89,7 +89,7 @@ public class ShiroJdbcIni {
 			}
 
 			// 权限
-			if (currentUser.isPermitted("delete")) {
+			if (currentUser.isPermitted("user:delete")) {
 				log.info("有删除权限...");
 			} else {
 				log.info("无删除权限...");
